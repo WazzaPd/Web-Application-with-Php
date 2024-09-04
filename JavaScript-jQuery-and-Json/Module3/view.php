@@ -4,10 +4,14 @@ if(! isset($_SESSION['name'])) die("Not logged in");
 require_once 'pdo.php';
 
 $stmt = $pdo->prepare("SELECT * FROM profile WHERE profile_id = :p_id");
-$value = $_GET['profile_id'];
-$value = (int)trim($value, '"');
-$stmt->execute(array(":p_id"=>($value)));
+$profile_id = $_GET['profile_id'];
+$profile_id = (int)trim($profile_id, '"');
+$stmt->execute(array(":p_id"=>($profile_id)));
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$stmt = $pdo->prepare("SELECT * FROM position WHERE profile_id = :p_id");
+$stmt->execute(array(":p_id"=>($profile_id)));
+$positions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //check if valid id
 if ($row === false) {
@@ -66,6 +70,20 @@ if ($row === false) {
     echo "<p> Summary: </br>";
     echo htmlentities($row['summary']);
     echo "</p>";
+
+    echo '<ul>';
+    foreach ($positions as $position){
+        // $positions is a 2D array
+        if(is_array($position)){
+            echo '<li>'.$position['year'].': '.$position['description'].'</li>';
+        }
+        // $positions is a 1D array
+        else {
+            echo '<li>'.$positions['year'].': '.$positions['description'].'</li>';
+            break;
+        }
+    }
+    echo '</ul>'
 ?>
 
 <a href="index.php">Done</a>

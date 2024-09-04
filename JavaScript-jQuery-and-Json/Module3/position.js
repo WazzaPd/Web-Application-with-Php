@@ -18,6 +18,8 @@ $(document).ready(function(){
 
     $('#position_button').click(function(event){
         event.preventDefault();
+        // to account for possible php injections
+        countPos = $('#position_container').children().length;
         countPos ++;
         if(countPos > 9){
             alert("Maximum of 9 Positions may be added");
@@ -70,6 +72,8 @@ $(document).ready(function(){
     // Use Container to handle clicks on dynamically added .removePosition buttons
     $('#position_container').on('click', '.removePosition', function(event){
         event.preventDefault();
+        // to account for possible php injections
+        countPos = $('#position_container').children().length;
         countPos--;
         let parent = $(this).parent();
         let parent_id = parent.attr('id');
